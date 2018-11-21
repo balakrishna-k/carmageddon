@@ -29,12 +29,12 @@ git clone https://github.com/balakrishna-k/carmageddon.git
 ```
 - To test out manual control, run the following command on the terminal.
 ```bash
-./manual_control.py 
+./control.py 
 ```
 
 - To test out in autopilot mode, run the following command on the terminal.
 ```bash
-./manual_control.py --autopilot
+./control.py --autopilot
 ```
 
 * View Outputs:
