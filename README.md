@@ -42,7 +42,7 @@ git clone https://github.com/balakrishna-k/carmageddon.git
 Look in the _out folder
 ```
 
-## Important Files
-* `tutorial.py`
-* `manual_control.py`
-  
+## Important Modules [WIP]
+* `world`
+* `sensors`
+* `controllers`
