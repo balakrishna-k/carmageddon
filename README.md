@@ -46,4 +46,3 @@ Look in the _out folder
 * `world`
 * `sensors`
 * `controllers`
-  
