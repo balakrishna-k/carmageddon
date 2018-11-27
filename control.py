@@ -1,25 +1,5 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
-
-
-# ==============================================================================
-# -- find carla module ---------------------------------------------------------
-# ==============================================================================
-
-import glob
-import os
-import sys
-
-try:
-    sys.path.append(glob.glob('**/carla-*%d.%d-%s.egg' % (
-        sys.version_info.major,
-        sys.version_info.minor,
-        'win-amd64' if os.name == 'nt' else 'linux-x86_64'))[0])
-except IndexError:
-    pass
-
-
 # ==============================================================================
 # -- imports -------------------------------------------------------------------
 # ==============================================================================
@@ -27,7 +7,7 @@ except IndexError:
 import logging
 
 try:
-    import carla
+    import carla.libcarla as carla
 except ImportError:
     raise RuntimeError('cannot import carla, make sure carla 0.9.1 is installed')
 
@@ -46,10 +26,10 @@ from world.world import World
 from controllers.keyboard import KeyboardControl
 from display.hud import HUD
 
+
 # ==============================================================================
 # -- Scenario ---------------------------------------------------------------
 # ==============================================================================
-
 
 def execute_scenario(args):
     pygame.init()
@@ -92,7 +72,7 @@ def execute_scenario(args):
 
 def main():
 
-    args = util.parse_args()
+    args = util.parse_control_args()
 
     args.width, args.height = [int(x) for x in args.res.split('x')]
 
