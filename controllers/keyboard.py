@@ -1,5 +1,5 @@
 try:
-    import carla
+    import carla.libcarla as carla
 except ImportError:
     raise RuntimeError('cannot import carla, make sure carla 0.9.1 is installed')
 

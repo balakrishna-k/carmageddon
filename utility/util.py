@@ -19,7 +19,7 @@ def get_actor_display_name(actor, truncate=250):
     return (name[:truncate-1] + u'\u2026') if len(name) > truncate else name
 
 
-def parse_args():
+def parse_control_args():
     argparser = argparse.ArgumentParser(
         description='CARLA Manual Control Client')
     argparser.add_argument(
