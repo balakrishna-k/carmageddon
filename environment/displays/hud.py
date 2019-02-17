@@ -7,8 +7,8 @@ except ImportError:
     raise RuntimeError('cannot import pygame, make sure pygame package is installed')
 
 from utility import util
-from display.text import HelpText
-from display.text import FadingText
+from environment.displays.text import HelpText
+from environment.displays.text import FadingText
 
 
 class HUD(object):

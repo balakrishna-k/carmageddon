@@ -3,13 +3,11 @@ import random
 try:
     import carla
 except ImportError:
-    raise RuntimeError('cannot import carla, make sure carla 0.9.1 is installed')
+    raise RuntimeError('cannot import carla, make sure carla 0.9.2 is installed')
 
-
-from sensors.collision import CollisionSensor
-from sensors.lane_invasion import LaneInvasionSensor
-
-from camera.manager import CameraManager
+from environment.sensors.collision import CollisionSensor
+from environment.sensors.lane_invasion import LaneInvasionSensor
+from environment.sensors.camera import CameraManager
 
 from utility import util
 

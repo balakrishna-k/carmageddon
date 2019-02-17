@@ -42,16 +42,16 @@ except ImportError:
     raise RuntimeError('cannot import numpy, make sure numpy package is installed')
 
 from utility import util
-from world.world import World
-from controllers.keyboard import KeyboardControl
-from display.hud import HUD
+from environment.worlds.world import World
+from environment.controllers.keyboard import KeyboardControl
+from environment.displays.hud import HUD
 
 # ==============================================================================
 # -- Scenario ---------------------------------------------------------------
 # ==============================================================================
 
 
-def execute_scenario(args):
+def main(args):
     pygame.init()
     pygame.font.init()
     world = None
@@ -86,11 +86,11 @@ def execute_scenario(args):
 
 
 # ==============================================================================
-# -- main() --------------------------------------------------------------------
+# -- Argument Parsing --------------------------------------------------------------------
 # ==============================================================================
 
 
-def main():
+def parse_args():
 
     args = util.parse_args()
 
@@ -102,8 +102,7 @@ def main():
     logging.info('listening to server %s:%s', args.host, args.port)
 
     try:
-
-        execute_scenario(args)
+        main(args)
 
     except KeyboardInterrupt:
         print('\nCancelled by user. Bye!')
@@ -113,4 +112,4 @@ def main():
 
 if __name__ == '__main__':
 
-    main()
+    parse_args()
