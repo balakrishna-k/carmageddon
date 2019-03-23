@@ -25,7 +25,6 @@ class Criterion(py_trees.behaviour.Behaviour):
         self.actual_value = 0
         self.optional = optional
 
-
 class MaxVelocityTest(Criterion):
 
     """

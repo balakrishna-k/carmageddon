@@ -87,6 +87,7 @@ class TriggerVelocity(AtomicBehavior):
 
         delta_velocity = CarlaDataProvider.get_velocity(
             self._vehicle) - self._target_velocity
+
         if delta_velocity < TOLERANCE:
             new_status = py_trees.common.Status.SUCCESS
 
@@ -259,7 +260,6 @@ class StopVehicle(AtomicBehavior):
         self._vehicle.apply_control(self._control)
 
         return new_status
-
 
 def calculate_distance(location, other_location):
     return location.distance(other_location)
