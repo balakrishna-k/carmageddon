@@ -64,7 +64,7 @@ def main(args):
             (args.width, args.height),
             pygame.HWSURFACE | pygame.DOUBLEBUF)
 
-        hud = HUD(args.width, args.height, __doc__)
+        hud = HUD(args.width, args.height)
         world = World(client.get_world(), hud)
         controller = KeyboardControl(world, args.autopilot)
 

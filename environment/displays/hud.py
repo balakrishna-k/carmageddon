@@ -12,7 +12,7 @@ from environment.displays.text import FadingText
 
 
 class HUD(object):
-    def __init__(self, width, height, __doc__):
+    def __init__(self, width, height):
         self.dim = (width, height)
         font = pygame.font.Font(pygame.font.get_default_font(), 20)
         fonts = [x for x in pygame.font.get_fonts() if 'mono' in x]

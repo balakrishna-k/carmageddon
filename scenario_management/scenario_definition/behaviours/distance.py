@@ -1,12 +1,13 @@
 import scenario_management.constants as ct
-from scenario_management.scenario_definition.behaviours.behaviour import BehaviourTemplate
+import py_trees
+
 from scenario_management.scenario_manager.tracker import Tracker
 
 
-class InRegionOfInterest(BehaviourTemplate):
+class InRegion(py_trees.behaviour.Behaviour):
 
     """
-    This class contains the trigger region (conditions) of a scenario
+    This class contains the trigger region (tests) of a scenario
     """
 
     def __init__(self, vehicle, min_x, max_x, min_y,
@@ -15,7 +16,7 @@ class InRegionOfInterest(BehaviourTemplate):
             Setup trigger region (rectangle provided by
             [min_x,min_y] and [max_x,max_y]
         """
-        super(InRegionOfInterest, self).__init__(name)
+        super(InRegion, self).__init__(name)
         self._vehicle = vehicle
         self._min_x = min_x
         self._max_x = max_x
@@ -39,3 +40,39 @@ class InRegionOfInterest(BehaviourTemplate):
             new_status = ct.STATUS.SUCCESS
 
         return new_status
+
+
+class DistanceToVehicle(py_trees.behaviour.Behaviour):
+
+    """
+    This class contains the trigger distance (condition) between to vehicles
+    of a scenario
+    """
+
+    def __init__(self, other_vehicle, ego_vehicle, distance,
+                 name="DistanceToVehicle"):
+        """
+        Setup trigger distance
+        """
+        super(DistanceToVehicle, self).__init__(name)
+        self._other_vehicle = other_vehicle
+        self._ego_vehicle = ego_vehicle
+        self._distance = distance
+
+    def update(self):
+        """
+        Check if the ego vehicle is within trigger distance to other vehicle
+        """
+        new_status = py_trees.common.Status.RUNNING
+
+        ego_location = Tracker.get_location(self._ego_vehicle)
+        other_location = Tracker.get_location(self._other_vehicle)
+
+        if ego_location is None or other_location is None:
+            return new_status
+
+        if ego_location.distance(other_location) < self._distance:
+            new_status = py_trees.common.Status.SUCCESS
+
+        return new_status
+
