@@ -38,11 +38,11 @@ def main():
         client = carla.Client('localhost', 2000)
         client.set_timeout(2.0)
 
-        # Once we have a client we can retrieve the world that is currently
+        # Once we have a client we can retrieve the worlds that is currently
         # running.
         world = client.get_world()
 
-        # The world contains the list blueprints that we can use for adding new
+        # The worlds contains the list blueprints that we can use for adding new
         # actors into the simulation.
         blueprint_library = world.get_blueprint_library()
 
@@ -60,7 +60,7 @@ def main():
         # random transform from the list of recommended spawn points of the map.
         transform = random.choice(world.get_map().get_spawn_points())
 
-        # So let's tell the world to spawn the vehicle.
+        # So let's tell the worlds to spawn the vehicle.
         vehicle = world.spawn_actor(bp, transform)
 
         # It is important to note that the actors we create won't be destroyed

@@ -7,12 +7,12 @@ except ImportError:
     raise RuntimeError('cannot import pygame, make sure pygame package is installed')
 
 from utility import util
-from display.text import HelpText
-from display.text import FadingText
+from environment.displays.text import HelpText
+from environment.displays.text import FadingText
 
 
 class HUD(object):
-    def __init__(self, width, height, __doc__):
+    def __init__(self, width, height):
         self.dim = (width, height)
         font = pygame.font.Font(pygame.font.get_default_font(), 20)
         fonts = [x for x in pygame.font.get_fonts() if 'mono' in x]
