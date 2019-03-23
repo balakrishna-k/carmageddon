@@ -1,18 +1,3 @@
-#!/usr/bin/env python
-
-# Copyright (c) 2018 Intel Labs.
-# authors: Fabian Oboril (fabian.oboril@intel.com)
-#
-# This work is licensed under the terms of the MIT license.
-# For a copy, see <https://opensource.org/licenses/MIT>.
-
-"""
-This module provides all atomic evaluation criteria required to analyze if a
-scenario was completed successfully or failed.
-
-The atomic criteria are implemented with py_trees.
-"""
-
 import weakref
 
 import py_trees
@@ -23,21 +8,6 @@ from ScenarioManager.timer import GameTime
 
 
 class Criterion(py_trees.behaviour.Behaviour):
-
-    """
-    Base class for all criteria used to evaluate a scenario for success/failure
-
-    Important parameters (PUBLIC):
-    - name: Name of the criterion
-    - expected_value_success:    Result in case of success
-                                 (e.g. max_speed, zero collisions, ...)
-    - expected_value_acceptable: Result that does not mean a failure,
-                                 but is not good enough for a success
-    - actual_value: Actual result after running the scenario
-    - test_status: Used to access the result of the criterion
-    - optional: Indicates if a criterion is optional (not used for overall analysis)
-    """
-
     def __init__(self,
                  name,
                  vehicle,
@@ -45,7 +15,6 @@ class Criterion(py_trees.behaviour.Behaviour):
                  expected_value_acceptable=None,
                  optional=False):
         super(Criterion, self).__init__(name)
-        self.logger.debug("%s.__init__()" % (self.__class__.__name__))
         self._terminate_on_failure = False
 
         self.name = name
@@ -55,17 +24,6 @@ class Criterion(py_trees.behaviour.Behaviour):
         self.expected_value_acceptable = expected_value_acceptable
         self.actual_value = 0
         self.optional = optional
-
-    def setup(self, unused_timeout=15):
-        self.logger.debug("%s.setup()" % (self.__class__.__name__))
-        return True
-
-    def initialise(self):
-        self.logger.debug("%s.initialise()" % (self.__class__.__name__))
-
-    def terminate(self, new_status):
-        self.logger.debug("%s.terminate()[%s->%s]" % (
-            self.__class__.__name__, self.status, new_status))
 
 
 class MaxVelocityTest(Criterion):
@@ -101,9 +59,6 @@ class MaxVelocityTest(Criterion):
 
         if self._terminate_on_failure and (self.test_status == "FAILURE"):
             new_status = py_trees.common.Status.FAILURE
-
-        self.logger.debug("%s.update()[%s->%s]" %
-                          (self.__class__.__name__, self.status, new_status))
 
         return new_status
 
@@ -162,9 +117,6 @@ class DrivenDistanceTest(Criterion):
 
         if self._terminate_on_failure and (self.test_status == "FAILURE"):
             new_status = py_trees.common.Status.FAILURE
-
-        self.logger.debug("%s.update()[%s->%s]" %
-                          (self.__class__.__name__, self.status, new_status))
 
         return new_status
 
@@ -231,9 +183,6 @@ class AverageVelocityTest(Criterion):
         if self._terminate_on_failure and (self.test_status == "FAILURE"):
             new_status = py_trees.common.Status.FAILURE
 
-        self.logger.debug("%s.update()[%s->%s]" %
-                          (self.__class__.__name__, self.status, new_status))
-
         return new_status
 
 
@@ -248,7 +197,6 @@ class CollisionTest(Criterion):
         Construction with sensor setup
         """
         super(CollisionTest, self).__init__(name, vehicle, 0, None, optional)
-        self.logger.debug("%s.__init__()" % (self.__class__.__name__))
 
         world = self.vehicle.get_world()
         blueprint = world.get_blueprint_library().find('sensor.other.collision')
@@ -270,9 +218,6 @@ class CollisionTest(Criterion):
 
         if self._terminate_on_failure and (self.test_status == "FAILURE"):
             new_status = py_trees.common.Status.FAILURE
-
-        self.logger.debug("%s.update()[%s->%s]" %
-                          (self.__class__.__name__, self.status, new_status))
 
         return new_status
 
@@ -307,7 +252,6 @@ class KeepLaneTest(Criterion):
         Construction with sensor setup
         """
         super(KeepLaneTest, self).__init__(name, vehicle, 0, None, optional)
-        self.logger.debug("%s.__init__()" % (self.__class__.__name__))
 
         world = self.vehicle.get_world()
         blueprint = world.get_blueprint_library().find(
@@ -331,9 +275,6 @@ class KeepLaneTest(Criterion):
         if self._terminate_on_failure and (self.test_status == "FAILURE"):
             new_status = py_trees.common.Status.FAILURE
 
-        self.logger.debug("%s.update()[%s->%s]" %
-                          (self.__class__.__name__, self.status, new_status))
-
         return new_status
 
     def terminate(self, new_status):
@@ -354,52 +295,3 @@ class KeepLaneTest(Criterion):
         if not self:
             return
         self.actual_value += 1
-
-
-class ReachedRegionTest(Criterion):
-
-    """
-    This class contains the reached region test
-    The test is a success if the vehicle reaches a specified region
-    """
-
-    def __init__(self, vehicle, min_x, max_x, min_y,
-                 max_y, name="ReachedRegionTest"):
-        """
-        Setup trigger region (rectangle provided by
-        [min_x,min_y] and [max_x,max_y]
-        """
-        super(ReachedRegionTest, self).__init__(name, vehicle, 0)
-        self.logger.debug("%s.__init__()" % (self.__class__.__name__))
-        self._vehicle = vehicle
-        self._min_x = min_x
-        self._max_x = max_x
-        self._min_y = min_y
-        self._max_y = max_y
-
-    def update(self):
-        """
-        Check if the vehicle location is within trigger region
-        """
-        new_status = py_trees.common.Status.RUNNING
-
-        location = CarlaDataProvider.get_location(self._vehicle)
-        if location is None:
-            return new_status
-
-        in_region = False
-        if self.test_status != "SUCCESS":
-            in_region = (location.x > self._min_x and location.x < self._max_x) and (
-                location.y > self._min_y and location.y < self._max_y)
-            if in_region:
-                self.test_status = "SUCCESS"
-            else:
-                self.test_status = "RUNNING"
-
-        if self.test_status == "SUCCESS":
-            new_status = py_trees.common.Status.SUCCESS
-
-        self.logger.debug("%s.update()[%s->%s]" %
-                          (self.__class__.__name__, self.status, new_status))
-
-        return new_status
